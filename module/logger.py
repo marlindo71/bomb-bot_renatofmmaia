@@ -26,20 +26,15 @@ COLOR = {
 
 
 def logger(message, color="default", force_log_file=False, terminal=True, datetime=True, end='\n'):
-    color_formatted = COLOR.get(color.lower(), COLOR["default"])
     formatted_datetime = time.strftime(Config.get("generals", "time_format"), time.localtime())
     
     if datetime:
         formatted_message = "[{}] => {}".format(formatted_datetime, message)
     else:
         formatted_message = message
-        
-    formatted_message_colored = color_formatted + formatted_message + "\033[0m"
-    
+   
     if terminal:
-        sys.stdout.write(color_formatted)
-        sys.stdout.flush()
-        print(formatted_message_colored, end=end)
+        print(formatted_message, end=end)
 
     if Config.get('generals','save_log_file') or force_log_file:
         with open("./logs/logger.log", "a+", encoding='utf-8') as logger_file:
@@ -47,15 +42,15 @@ def logger(message, color="default", force_log_file=False, terminal=True, dateti
 
 def logger_translated(text: str, loggerEnum: LoggerEnum):
     if loggerEnum.value == LoggerEnum.ACTION.value:
-        logger(f"🐧 Performing {text} action")
+        logger(f"Performing {text} action")
     elif loggerEnum.value == LoggerEnum.BUTTON_CLICK.value:
-        logger(f"❎ Clicking in {text} button...")
+        logger(f"Clicking in {text} button...")
     elif loggerEnum.value == LoggerEnum.PAGE_FOUND.value:
-        logger(f"🚩 {text} page detected.")
+        logger(f"{text} page detected.")
     elif loggerEnum.value == LoggerEnum.TIMER_REFRESH.value:
-        logger(f"🍺 Refresh {text}.")
+        logger(f"Refresh {text}.")
     elif loggerEnum.value == LoggerEnum.ERROR.value:
-        logger(f"🆘 {text}.")
+        logger(f"{text}.")
     
 def reset_log_file():
     file = open("./logs/logger.log","w")

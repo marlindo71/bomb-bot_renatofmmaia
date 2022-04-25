@@ -151,7 +151,7 @@ class BombScreen:
             TelegramBot.send_message_with_image(image, "Se liga no BCOIN desse baú, não deixe de contribuir com a evolução do bot :D")
         except Exception as e:
             logger(str(e))
-            logger("😬 Ohh no! We couldn't send your farm report to Telegram.", color="yellow", force_log_file=True)
+            logger("Ohh no! We couldn't send your farm report to Telegram.", color="yellow", force_log_file=True)
         
         BombScreen.go_to_treasure_hunt(manager)
         manager.set_refresh_timer("refresh_print_chest")
@@ -195,10 +195,10 @@ class Login:
                     continue
 
                 if (BombScreen.wait_for_screen(BombScreenEnum.HOME.value) != BombScreenEnum.HOME.value):
-                    logger("🚫 Failed to login, restart proccess...")
+                    logger("Failed to login, restart proccess...")
                     continue
                 else:
-                    logger("🎉 Login successfully!")
+                    logger("Login successfully!")
                     logged = True
                     break
 
@@ -232,7 +232,7 @@ class Hero:
             screen_img = Image.screen()
             
             buttons_position = Image.get_target_positions("button_work_unchecked", not_target="button_work_checked", screen_image=screen_img)
-            logger(f"👁️  Found {len(buttons_position)} Heroes resting:")
+            logger(f"Found {len(buttons_position)} Heroes resting:")
             
             if not buttons_position:
                 return 0
@@ -240,7 +240,6 @@ class Hero:
             x_buttons = buttons_position[0][0]
             height, width = Image.TARGETS["hero_search_area"].shape[:2]
             screen_img = screen_img[:,x_buttons-width-Image.MONITOR_LEFT:x_buttons - Image.MONITOR_LEFT, :]
-            logger("↳", end=" ", datetime=False)
             for button_position in buttons_position:
                 x,y,w,h = button_position
                 search_img = screen_img[y:y+height, :, :]
@@ -263,9 +262,9 @@ class Hero:
                 if life_index*scale_factor >= Config.get('heroes_work_mod', hero_rarity):
                     click_randomly_in_position(x,y,w,h)
                     n_clicks += 1
-                    logger("💪;", end=" ",datetime=False)
+                    logger(";", end=" ",datetime=False)
                 else:
-                    logger("💤;", end=" ", datetime=False)
+                    logger(";", end=" ", datetime=False)
 
             logger("", datetime=False)
             return n_clicks
@@ -279,7 +278,7 @@ class Hero:
             function_between=click_available_heroes
         )
         
-        logger(f"🏃 {sum(n_clicks_per_scrool)} new heros sent to explode everything 💣💣💣.")
+        logger(f"{sum(n_clicks_per_scrool)} new heros sent to explode everything.")
         Hero.refresh_hunt(manager)
         manager.set_refresh_timer("refresh_heroes")
         return True

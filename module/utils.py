@@ -58,7 +58,7 @@ def randomize_int(loc: float, width: float, safe_factor=0):
     return round(randomize(loc, width, safe_factor))
 
 def refresh_page(delay:int = 5):
-    logger("🌍 Refreshing browser!")
+    logger("Refreshing browser!")
     
     shortcut_config = Config.get('generals','refresh_page_shortcut')
     if shortcut_config == 1:

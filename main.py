@@ -54,12 +54,12 @@ def main(config_file):
         while True:
             try:
                 for manager in bomb_crypto_managers:
-                    current_screen = BombScreen.get_current_screen()
-                    
-                    if show_initial_screen_message:
-                        logger(f"💫 Bombcrypto window[{bomb_browser_count}] inicializado em: {BombScreenEnum(current_screen).name}")
-                    
+                   
                     with manager:
+                        current_screen = BombScreen.get_current_screen()
+                        if show_initial_screen_message:
+                            logger(f"Bombcrypto window[{bomb_browser_count}] inicializado em: {BombScreenEnum(current_screen).name}")
+
                         manager.do_what_needs_to_be_done(current_screen)
                     
                     if bomb_browser_count == len(bomb_crypto_managers):
@@ -75,13 +75,13 @@ def main(config_file):
                     terminal=False,
                 )
                 logger(
-                    f"😬 Ohh no! A error has occurred in the last action.\n{e}\n Check the log  file for more details.",
+                    f"Ohh no! A error has occurred in the last action.\n{e}\n Check the log  file for more details.",
                     color="yellow",
                 )
             sleep(5)
     except Exception:
         logger(traceback.format_exc(), color="red", force_log_file=True, terminal=False)
-        logger("😬 Ohh no! We couldn't start the bot.", color="red")
+        logger("Ohh no! We couldn't start the bot.", color="red")
 
 
 if __name__ == "__main__":
