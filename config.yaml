@@ -15,7 +15,7 @@ generals:
   refresh_page_shortcut: 2
   # Time format to show on logs:
   # Full date time: "%Y-%m-%d %H:%M:%S"
-  time_format: "%m-%d %H:%M"
+  time_format: "%m-%d %H:%M:%S"
 
 
 heroes_work_mod:
@@ -70,7 +70,12 @@ telegram:
 
   # Timer when your chest image is sent to telegram
   refresh_print_chest: 60
-  
+
+metamask:
+  # Login configuration
+  #   true: login with Metamask
+  #   false: login without Metamask
+  login_with_metamask: false
 
 # xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 # DONT CHANGE THIS CONFIGS

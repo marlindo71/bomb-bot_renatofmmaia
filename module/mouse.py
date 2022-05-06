@@ -48,7 +48,6 @@ def click_randomly_in_position(x, y, w, h):
     time.sleep(time_between)
     pyautogui.click(duration=click_duration)
 
-
 def click_when_target_appears(target: str, time_beteween: float = 0.5, timeout: float = 10):
     """ Click in a target when it appears.
         It will check for target every `time_beteween` seconds.
@@ -57,7 +56,6 @@ def click_when_target_appears(target: str, time_beteween: float = 0.5, timeout: 
     """
     
     return do_with_timeout(click_one_target, args = [target])
-
 
 def randomize_values(x, w, y, h):
     x_rand = randomize_int(x, w, 0.20)

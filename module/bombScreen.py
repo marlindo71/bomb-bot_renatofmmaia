@@ -1,14 +1,12 @@
 from enum import Enum
-
-
 from cv2 import cv2
-
 from .config import Config
 from .image import Image
 from .logger import LoggerEnum, logger, logger_translated
 from .mouse import *
 from .utils import *
 from .telegram import TelegramBot
+from .ocr import OCR
 
 
 class BombScreenEnum(Enum):
@@ -24,9 +22,7 @@ class BombScreenEnum(Enum):
 
 class BombScreen:
 
-    def wait_for_screen(
-        bombScreenEnum, time_beteween: float = 0.5, timeout: float = 60
-    ):
+    def wait_for_screen(bombScreenEnum, time_beteween: float = 0.5, timeout: float = 60):
         def check_screen():
             screen = BombScreen.get_current_screen()
             if screen == bombScreenEnum:
@@ -36,15 +32,13 @@ class BombScreen:
         res = do_with_timeout(
             check_screen, time_beteween=time_beteween, timeout=timeout
         )
-        
+
         if res is None:
             raise Exception(f'Timeout waiting for screen {BombScreenEnum(bombScreenEnum).name}.')
         
         return res
     
-    def wait_for_leave_screen(
-        bombScreenEnum, time_beteween: float = 0.5, timeout: float = 60
-    ):
+    def wait_for_leave_screen(bombScreenEnum, time_beteween: float = 0.5, timeout: float = 60):
         def check_screen():
             screen = BombScreen.get_current_screen()
             if screen == bombScreenEnum:
@@ -55,7 +49,6 @@ class BombScreen:
         return do_with_timeout(
             check_screen, time_beteween=time_beteween, timeout=timeout
         )
-
 
     def get_current_screen(time_beteween: float = 0.5, timeout: float = 20):
         targets = {
@@ -135,27 +128,33 @@ class BombScreen:
             
     def do_print_chest(manager):
         logger_translated("print chest", LoggerEnum.ACTION)
-        
+
         if BombScreen.get_current_screen() != BombScreenEnum.TREASURE_HUNT.value:
             BombScreen.go_to_treasure_hunt(manager)
-        
+
+        click_when_target_appears("button_roi_coin")
         click_when_target_appears("button_hunt_chest")
         BombScreen.wait_for_screen(BombScreenEnum.CHEST.value)
         image = None      
         try:
+            h, w = Image.TARGETS["chest_screen_for_geometry"].shape[:2]
+            x = 174
+            y = 33
+            w = 118
+            h = 38
             if Config.get("screen", "print_full_screen"):
                 image = Image.print_full_screen("chest", "chest_screen_for_geometry")
             else:
-                image = Image.print_partial_screen("chest", "chest_screen_for_geometry")
-        
-            TelegramBot.send_message_with_image(image, "Se liga no BCOIN desse baú, não deixe de contribuir com a evolução do bot :D")
+                image = Image.print_partial_screen("chest", "chest_screen_for_geometry", x, y, w, h)
+            bcoins = OCR.getDigits(image)
+            TelegramBot.send_message_with_image("chest.png", f'{manager.window.account} - {bcoins}')
+            logger(f'{manager.window.account} - {bcoins}')
         except Exception as e:
             logger(str(e))
             logger("Ohh no! We couldn't send your farm report to Telegram.", color="yellow", force_log_file=True)
         
         BombScreen.go_to_treasure_hunt(manager)
         manager.set_refresh_timer("refresh_print_chest")
-        
 
 
 class Login:
@@ -170,6 +169,7 @@ class Login:
             logger_translated("login", LoggerEnum.ACTION)
 
             login_attepmts = Config.PROPERTIES["screen"]["number_login_attempts"]
+            login_with_metamask = Config.get("metamask", "login_with_metamask")
         
             for i in range(login_attepmts):
                 
@@ -184,15 +184,21 @@ class Login:
                     refresh_page()
                     continue
                 
-                logger_translated("connect with metamask", LoggerEnum.BUTTON_CLICK)
-                if not click_when_target_appears("button_connect_metamask"):
-                    refresh_page()
-                    continue
+                if login_with_metamask:
+                    logger_translated("connect with metamask", LoggerEnum.BUTTON_CLICK)
+                    if not click_when_target_appears("button_connect_metamask"):
+                        refresh_page()
+                        continue
 
-                logger_translated("sigin wallet", LoggerEnum.BUTTON_CLICK)
-                if not click_when_target_appears("button_connect_wallet_sign"):
-                    refresh_page()
-                    continue
+                    logger_translated("sigin wallet", LoggerEnum.BUTTON_CLICK)
+                    if not click_when_target_appears("button_connect_wallet_sign"):
+                        refresh_page()
+                        continue
+                else:
+                    logger_translated("connect with login", LoggerEnum.BUTTON_CLICK)
+                    if not click_when_target_appears("button_connect_login"):
+                        refresh_page()
+                        continue
 
                 if (BombScreen.wait_for_screen(BombScreenEnum.HOME.value) != BombScreenEnum.HOME.value):
                     logger("Failed to login, restart proccess...")

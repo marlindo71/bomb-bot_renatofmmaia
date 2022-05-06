@@ -71,12 +71,16 @@ class Image:
         image.save(image_name)
         return image_name
         
-    def print_partial_screen(image_name: str, target: str):
+    def print_partial_screen(image_name: str, target: str, x_add: 0, y_add: 0, w_add:0, h_add:0):
         image_name = f'{image_name}.png'
         x,y,w,h = Image.get_one_target_position(target, 0)
+        x += x_add
+        y += y_add
+        w = w_add
+        h = h_add
         image = pyautogui.screenshot(region=(x,y,w,h))
         image.save(image_name)
-        return image_name
+        return cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
 
     def get_target_positions(target:str, screen_image = None, threshold:float=0.8, not_target:str=None):
         threshold_config = Config.PROPERTIES["threshold"]["hero_to_work"]
