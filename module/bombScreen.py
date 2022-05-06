@@ -132,7 +132,7 @@ class BombScreen:
         if BombScreen.get_current_screen() != BombScreenEnum.TREASURE_HUNT.value:
             BombScreen.go_to_treasure_hunt(manager)
 
-        click_when_target_appears("button_roi_coin")
+        # click_when_target_appears("button_roi_coin")
         click_when_target_appears("button_hunt_chest")
         BombScreen.wait_for_screen(BombScreenEnum.CHEST.value)
         image = None      
